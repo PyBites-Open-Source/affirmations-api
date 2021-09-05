@@ -62,6 +62,11 @@ def delete_user(user_id: int):
 def create_affirmation(affirmation: AffirmationCreate):
     with Session(engine) as session:
         db_affirmation = Affirmation.from_orm(affirmation)
+
+        user = session.get(User, affirmation.user_id)
+        if user is None:
+            raise HTTPException(status_code=400, detail="Not a valid user id")
+
         session.add(db_affirmation)
         session.commit()
         session.refresh(db_affirmation)

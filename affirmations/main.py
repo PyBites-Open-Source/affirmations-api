@@ -1,7 +1,14 @@
 from typing import List
 
 from .db import create_db_and_tables, engine
-from .models import User, UserCreate, UserRead, Affirmation, AffirmationCreate, AffirmationRead
+from .models import (
+    User,
+    UserCreate,
+    UserRead,
+    Affirmation,
+    AffirmationCreate,
+    AffirmationRead,
+)
 
 from fastapi import FastAPI, HTTPException
 from sqlmodel import Session, select

@@ -30,7 +30,7 @@ class AffirmationBase(SQLModel):
 class Affirmation(AffirmationBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     user: Optional[User] = Relationship(
-        back_populates="affirmations", sa_relationship_kwargs={"passive_deletes": True}
+        back_populates="affirmations", sa_relationship_kwargs={"cascade": True}
     )
 
 

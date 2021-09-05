@@ -10,7 +10,9 @@ class UserBase(SQLModel):
 
 class User(UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    affirmations: List["Affirmation"] = Relationship(back_populates="user")
+    affirmations: List["Affirmation"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"cascade": "all,delete"}
+    )
 
 
 class UserCreate(UserBase):
@@ -28,9 +30,7 @@ class AffirmationBase(SQLModel):
 
 class Affirmation(AffirmationBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user: Optional[User] = Relationship(
-        back_populates="affirmations", sa_relationship_kwargs={"cascade": "all, delete"}
-    )
+    user: Optional[User] = Relationship(back_populates="affirmations")
 
 
 class AffirmationCreate(AffirmationBase):

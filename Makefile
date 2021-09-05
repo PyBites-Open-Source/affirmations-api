@@ -1,6 +1,6 @@
 .PHONY: setup
 setup:
-	python3 -m venv venv && source venv/bin/activate && pip install -r requirements/dev.txt
+	python3.9 -m venv venv && source venv/bin/activate && pip install -r requirements/dev.txt
 
 .PHONY: lint
 lint:

@@ -28,6 +28,15 @@ def client_fixture(session: Session):
     app.dependency_overrides.clear()
 
 
+@pytest.fixture(name="user_1")
+def user_fixture(session: Session):
+    user = User(name="bob", handle="pybob")
+    session.add(user)
+    session.commit()
+    yield user
+    session.delete(user)
+
+
 def test_create_user(client: TestClient):
     response = client.post("/users/", json={"name": "bob", "handle": "pybob"})
     data = response.json()
@@ -50,10 +59,8 @@ def test_create_user_invalid(client: TestClient):
     assert response.status_code == 422
 
 
-def test_read_users(session: Session, client: TestClient):
-    user_1 = User(name="bob", handle="pybob")
+def test_read_users(session: Session, client: TestClient, user_1: User):
     user_2 = User(name="julian", handle="pyjul")
-    session.add(user_1)
     session.add(user_2)
     session.commit()
 
@@ -71,11 +78,7 @@ def test_read_users(session: Session, client: TestClient):
     assert data[1]["id"] == user_2.id
 
 
-def test_read_user(session: Session, client: TestClient):
-    user_1 = User(name="bob", handle="pybob")
-    session.add(user_1)
-    session.commit()
-
+def test_read_user(session: Session, client: TestClient, user_1: User):
     response = client.get(f"/users/{user_1.id}")
     data = response.json()
 
@@ -85,13 +88,70 @@ def test_read_user(session: Session, client: TestClient):
     assert data["id"] == user_1.id
 
 
-def test_delete_user(session: Session, client: TestClient):
-    user_1 = User(name="bob", handle="pybob")
-    session.add(user_1)
-    session.commit()
-
+def test_delete_user(session: Session, client: TestClient, user_1: User):
     response = client.delete(f"/users/{user_1.id}")
     user_in_db = session.get(User, user_1.id)
 
     assert response.status_code == 200
     assert user_in_db is None
+
+
+def test_create_affirmation(client: TestClient, user_1: User):
+    response = client.post(
+        "/affirmations/",
+        json={"text": "I can overcome any problem", "user_id": user_1.id},
+    )
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["text"] == "I can overcome any problem"
+    assert data["user_id"] == 1
+    assert data["id"] is not None
+
+
+def test_create_affirmation_wrong_user(client: TestClient, user_1: User):
+    response = client.post(
+        "/affirmations/",
+        json={"text": "I can overcome any problem", "user_id": user_1.id + 1},
+    )
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "Not a valid user id"}
+
+
+def test_delete_affirmation(session: Session, client: TestClient, user_1: User):
+    response = client.post(
+        "/affirmations/",
+        json={"text": "I can overcome any problem", "user_id": user_1.id},
+    )
+    data = response.json()
+
+    affirmation_id = data["id"]
+    response = client.delete(f"/affirmations/{affirmation_id}")
+    assert response.status_code == 200
+
+    affirmation_in_db = session.get(Affirmation, affirmation_id)
+    assert affirmation_in_db is None
+
+
+def test_read_affirmations(client: TestClient, user_1: User):
+    affirmations = (
+        "I am unstoppable",
+        "I can overcome any challenge",
+        "I am energetic",
+        "I workout everyday",
+    )
+    for text in affirmations:
+        client.post("/affirmations/", json={"text": text, "user_id": user_1.id})
+    response = client.get("/affirmations/")
+    data = response.json()
+
+    assert response.status_code == 200
+
+    assert len(data) == 4
+    stored_affirmations = sorted(row["text"] for row in data)
+    assert stored_affirmations == sorted(affirmations)
+
+
+def test_delete_user_deletes_assoc_affirmations(client: TestClient, user_1: User):
+    pass

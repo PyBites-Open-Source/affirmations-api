@@ -14,8 +14,12 @@ typing:
 test:
 	pytest
 
+.PHONY: coverage
+coverage:
+	pytest --cov=affirmations --cov-report term-missing
+
 .PHONY: ci
-ci: lint typing test
+ci: lint typing coverage
 
 .PHONY: precommit
 precommit:

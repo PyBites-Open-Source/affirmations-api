@@ -111,12 +111,13 @@ def test_create_affirmation(client: TestClient, user_1: User):
 
 def test_create_affirmation_wrong_user(client: TestClient, user_1: User):
     response = client.post(
-        "/affirmations/",
-        json={"text": "I can overcome any problem", "user_id": user_1.id + 1},
+        "/affirmations/", json={"text": "I can overcome any problem", "user_id": 0}
     )
 
+    data = response.json()
+
     assert response.status_code == 400
-    assert response.json() == {"detail": "Not a valid user id"}
+    assert data["detail"] == "Not a valid user id"
 
 
 def test_delete_affirmation(session: Session, client: TestClient, user_1: User):

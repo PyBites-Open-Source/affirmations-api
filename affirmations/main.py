@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from .db import create_db_and_tables, engine
 from .models import (

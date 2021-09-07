@@ -155,4 +155,22 @@ def test_read_affirmations(client: TestClient, user_1: User):
 
 
 def test_delete_user_deletes_assoc_affirmations(client: TestClient, user_1: User):
-    pass
+    affirmations = (
+        "I do my affirmations first thing in the morning",
+        "I eat healthy foods",
+        "I am in control",
+    )
+    for text in affirmations:
+        client.post("/affirmations/", json={"text": text, "user_id": user_1.id})
+    response = client.get("/affirmations/")
+
+    data = response.json()
+    assert len(data) == 3
+
+    response = client.delete(f"/users/{user_1.id}")
+    assert response.status_code == 200
+
+    # cascade: affirmations of user get deleted as well upon user deletion
+    response = client.get("/affirmations/")
+    data = response.json()
+    assert len(data) == 0

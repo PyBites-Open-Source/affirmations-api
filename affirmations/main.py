@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from .db import create_db_and_tables, engine
 from .models import (
@@ -35,7 +35,7 @@ def create_user(*, session: Session = Depends(get_session), user: UserCreate):
     return db_user
 
 
-@app.get("/users/", response_model=List[UserRead])
+@app.get("/users/", response_model=list[UserRead])
 def read_users(
     *,
     session: Session = Depends(get_session),
@@ -80,7 +80,7 @@ def create_affirmation(
     return db_affirmation
 
 
-@app.get("/affirmations/", response_model=List[AffirmationRead])
+@app.get("/affirmations/", response_model=list[AffirmationRead])
 def read_affirmations(
     *,
     session: Session = Depends(get_session),

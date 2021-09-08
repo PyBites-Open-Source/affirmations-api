@@ -1,25 +1,16 @@
 from distutils.util import strtobool
 import os
 
+from decouple import config
 from dotenv import load_dotenv
 from sqlmodel import create_engine, SQLModel
 
-load_dotenv()
+
+DATABASE_URL = config("DATABASE_URL")
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 
-def _cast_boolean(value):
-    """
-    Helper to convert config values to boolean, got this from:
-    https://github.com/henriquebastos/python-decouple/blob/master/decouple.py
-    """
-    value = str(value)
-    return bool(value) if value == "" else bool(strtobool(value))
-
-
-database_url = os.environ["DATABASE_URL"]
-debug = _cast_boolean(os.environ.get("DEBUG", False))
-
-engine = create_engine(database_url, echo=debug)
+engine = create_engine(DATABASE_URL, echo=DEBUG)
 
 
 def create_db_and_tables():

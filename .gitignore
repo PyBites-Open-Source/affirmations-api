@@ -1,4 +1,5 @@
 venv
 .env
 *.sqlite3
+*pyc
 .vscode

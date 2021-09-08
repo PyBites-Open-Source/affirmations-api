@@ -1,5 +1,3 @@
-from typing import Optional
-
 from .db import create_db_and_tables, engine
 from .models import (
     User,

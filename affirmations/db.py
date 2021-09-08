@@ -1,8 +1,4 @@
-from distutils.util import strtobool
-import os
-
 from decouple import config
-from dotenv import load_dotenv
 from sqlmodel import create_engine, SQLModel
 
 

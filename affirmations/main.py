@@ -38,7 +38,7 @@ def read_users(
     *,
     session: Session = Depends(get_session),
     offset: int = 0,
-    limit: int = Query(default=100, lte=100)
+    limit: int = Query(default=100, le=100)
 ):
     users = session.exec(select(User).offset(offset).limit(limit)).all()
     return users
@@ -83,7 +83,7 @@ def read_affirmations(
     *,
     session: Session = Depends(get_session),
     offset: int = 0,
-    limit: int = Query(default=100, lte=100)
+    limit: int = Query(default=100, le=100)
 ):
     affirmations = session.exec(select(Affirmation).offset(offset).limit(limit)).all()
     return affirmations

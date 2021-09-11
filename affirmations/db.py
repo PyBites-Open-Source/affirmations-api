@@ -1,6 +1,5 @@
 from decouple import config
-from sqlmodel import create_engine, SQLModel
-
+from sqlmodel import SQLModel, create_engine
 
 DATABASE_URL = config("DATABASE_URL")
 DEBUG = config("DEBUG", default=False, cast=bool)

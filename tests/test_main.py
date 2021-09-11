@@ -3,8 +3,8 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
-from affirmations.models import Affirmation, User
 from affirmations.main import app, get_session
+from affirmations.models import Affirmation, User
 
 
 @pytest.fixture(name="session")

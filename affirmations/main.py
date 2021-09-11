@@ -1,15 +1,15 @@
+from fastapi import Depends, FastAPI, HTTPException, Query
+from sqlmodel import Session, select
+
 from .db import create_db_and_tables, engine
 from .models import (
-    User,
-    UserCreate,
-    UserRead,
     Affirmation,
     AffirmationCreate,
     AffirmationRead,
+    User,
+    UserCreate,
+    UserRead,
 )
-
-from fastapi import Depends, FastAPI, HTTPException, Query
-from sqlmodel import Session, select
 
 app = FastAPI()
 

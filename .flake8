@@ -1,2 +1,6 @@
 [flake8]
-ignore = E501
+exclude = .git,.github,__pycache__,build,dist,venv,.pytest_cache,.coverage
+max-line-length = 88
+max-complexity = 10
+extend-ignore = E501,B008
+per-file-ignores = tests/*:S101

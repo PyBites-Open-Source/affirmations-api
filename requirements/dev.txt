@@ -1,4 +1,5 @@
 -r base.txt
+uvicorn
 pytest
 requests
 pytest-cov

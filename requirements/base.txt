@@ -10,5 +10,4 @@ sqlalchemy2-stubs==0.0.2a15
 sqlmodel==0.0.4
 starlette==0.14.2
 typing-extensions==3.10.0.2
-uvicorn==0.15.0
 psycopg2==2.9.1

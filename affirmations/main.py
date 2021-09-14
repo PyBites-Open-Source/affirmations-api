@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException, Query
 from sqlmodel import Session, select
 
-from .db import create_db_and_tables, engine
+from .db import create_db_and_tables, get_session
 from .models import (
     Affirmation,
     AffirmationCreate,
@@ -17,11 +17,6 @@ app = FastAPI()
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
-
-
-def get_session():
-    with Session(engine) as session:
-        yield session
 
 
 @app.post("/users/", response_model=UserRead)

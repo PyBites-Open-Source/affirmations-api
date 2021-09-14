@@ -153,6 +153,12 @@ def test_read_affirmations(client: TestClient, user_1: User):
     stored_affirmations = sorted(row["text"] for row in data)
     assert stored_affirmations == sorted(affirmations)
 
+    response = client.get("/affirmations/1")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data == {'text': 'I am unstoppable', 'user_id': 1, 'id': 1}
+
 
 def test_delete_user_deletes_assoc_affirmations(client: TestClient, user_1: User):
     affirmations = (
@@ -174,3 +180,14 @@ def test_delete_user_deletes_assoc_affirmations(client: TestClient, user_1: User
     response = client.get("/affirmations/")
     data = response.json()
     assert len(data) == 0
+
+
+def test_objects_notfound(client: TestClient):
+    response = client.get("/users/66")
+    data = response.json()
+    assert response.status_code == 404
+    assert data == {'detail': 'User not found'}
+    response = client.get("/affirmations/77")
+    data = response.json()
+    assert response.status_code == 404
+    assert data == {'detail': 'Affirmation not found'}

@@ -26,6 +26,11 @@ def get_session():
 
 @app.post("/users/", response_model=UserRead)
 def create_user(*, session: Session = Depends(get_session), user: UserCreate):
+    query = select(User).where(User.handle == user.handle)
+    existing_user = session.exec(query).first()
+    if existing_user is not None:
+        raise HTTPException(status_code=400, detail="User already exists")
+
     db_user = User.from_orm(user)
     session.add(db_user)
     session.commit()
@@ -66,6 +71,11 @@ def delete_user(*, session: Session = Depends(get_session), user_id: int):
 def create_affirmation(
     *, session: Session = Depends(get_session), affirmation: AffirmationCreate
 ):
+    query = select(Affirmation).where(Affirmation.text == affirmation.text)
+    existing_affirmation = session.exec(query).first()
+    if existing_affirmation is not None:
+        raise HTTPException(status_code=400, detail="Affirmation already exists")
+
     db_affirmation = Affirmation.from_orm(affirmation)
 
     user = session.get(User, affirmation.user_id)

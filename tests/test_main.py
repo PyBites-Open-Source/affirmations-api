@@ -59,6 +59,13 @@ def test_create_user_invalid(client: TestClient):
     assert response.status_code == 422
 
 
+def test_cannot_create_same_user_twice(client: TestClient, user_1: User):
+    response = client.post("/users/", json={"name": "bob", "handle": "pybob"})
+    assert response.status_code == 400
+    data = response.json()
+    assert data["detail"] == "User already exists"
+
+
 def test_read_users(session: Session, client: TestClient, user_1: User):
     user_2 = User(name="julian", handle="pyjul")
     session.add(user_2)
@@ -109,6 +116,23 @@ def test_create_affirmation(client: TestClient, user_1: User):
     assert data["id"] is not None
 
 
+def test_cannot_create_same_affirmation_twice(client: TestClient, user_1: User):
+    response = client.post(
+        "/affirmations/",
+        json={"text": "I can overcome any problem", "user_id": user_1.id},
+    )
+    assert response.status_code == 200
+
+    # post the same affirmation
+    response = client.post(
+        "/affirmations/",
+        json={"text": "I can overcome any problem", "user_id": user_1.id},
+    )
+    assert response.status_code == 400
+    data = response.json()
+    assert data["detail"] == "Affirmation already exists"
+
+
 def test_create_affirmation_wrong_user(client: TestClient, user_1: User):
     response = client.post(
         "/affirmations/", json={"text": "I can overcome any problem", "user_id": 0}
@@ -157,7 +181,7 @@ def test_read_affirmations(client: TestClient, user_1: User):
     data = response.json()
 
     assert response.status_code == 200
-    assert data == {'text': 'I am unstoppable', 'user_id': 1, 'id': 1}
+    assert data == {"text": "I am unstoppable", "user_id": 1, "id": 1}
 
 
 def test_delete_user_deletes_assoc_affirmations(client: TestClient, user_1: User):
@@ -186,8 +210,8 @@ def test_objects_notfound(client: TestClient):
     response = client.get("/users/66")
     data = response.json()
     assert response.status_code == 404
-    assert data == {'detail': 'User not found'}
+    assert data == {"detail": "User not found"}
     response = client.get("/affirmations/77")
     data = response.json()
     assert response.status_code == 404
-    assert data == {'detail': 'Affirmation not found'}
+    assert data == {"detail": "Affirmation not found"}

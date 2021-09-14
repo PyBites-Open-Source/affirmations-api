@@ -2,6 +2,10 @@
 setup:
 	python3.9 -m venv venv && source venv/bin/activate && pip install -r requirements/dev.txt
 
+.PHONY: run
+run:
+	source venv/bin/activate && uvicorn affirmations.main:app --reload
+
 .PHONY: lint
 lint:
 	flake8 --exclude venv
@@ -24,7 +28,3 @@ ci: lint typing coverage
 .PHONY: precommit
 precommit:
 	pre-commit install
-
-.PHONY: run
-run:
-	uvicorn affirmations.main:app --reload

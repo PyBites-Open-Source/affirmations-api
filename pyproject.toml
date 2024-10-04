@@ -1,0 +1,20 @@
+[project]
+name = "affirmations-api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.13.3",
+    "fastapi[standard]>=0.115.0",
+    "psycopg2>=2.9.9",
+    "python-decouple>=3.8",
+    "sqlmodel>=0.0.22",
+    "uvicorn>=0.31.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "mypy>=1.11.2",
+    "pytest-cov>=5.0.0",
+]

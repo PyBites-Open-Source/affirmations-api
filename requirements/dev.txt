@@ -1,8 +1,0 @@
--r base.txt
-uvicorn
-pytest
-requests
-pytest-cov
-flake8
-mypy
-pre-commit
